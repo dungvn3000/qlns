@@ -12,6 +12,7 @@ object ProjectBuild extends Build {
     anorm,
     "mysql" % "mysql-connector-java" % "5.1.18",
     "joda-time" % "joda-time" % "2.1",
+    "com.googlecode.mapperdao" % "mapperdao" % "1.0.0.rc17-2.10.0",
     "jp.t2v" %% "play21.auth" % "0.7"
   )
 
