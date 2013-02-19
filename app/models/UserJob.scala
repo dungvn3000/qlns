@@ -16,23 +16,22 @@ import java.util.Date
  */
 case class UserJob(userId: Long, jobId: Long, start: DateTime, end: Option[DateTime] = None)
 
-object UserJob {
+object UserJob extends TableSchema("user_job"){
 
-  val tableName = "user_job"
-  val userIdCol = "userId"
-  val jobIdCol = "jobId"
-  val startCol = "start"
-  val endCol = "end"
+  val userId = column("userId")
+  val jobId = column("jobId")
+  val start = column("start")
+  val end = column("end")
 
   def findByUserId(userId: Long) = {
     DB.withConnection(implicit c => {
-      SQL(s"select * from $tableName where $userIdCol = {userId}").on('userId -> userId).as(userJob *)
+      SQL(s"select * from $tableName where $userId = {userId}").on('userId -> userId).as(userJob *)
     })
   }
 
   def insert(userJob: UserJob) = {
     DB.withTransaction(implicit c => {
-      SQL(s"insert into $tableName ($userIdCol, $jobIdCol, $startCol, $endCol) values ({userId}, {jobId}, {start}, {end})").on(
+      SQL(s"insert into $tableName ($userId, $jobId, $start, $end) values ({userId}, {jobId}, {start}, {end})").on(
         'userId -> userJob.userId,
         'jobId -> userJob.jobId,
         'start -> userJob.start.toDate,
@@ -41,10 +40,10 @@ object UserJob {
     })
   }
 
-  val userJob = get[Long](userIdCol) ~
-    get[Long](jobIdCol) ~
-    get[Date](startCol) ~
-    get[Option[Date]](endCol) map {
+  val userJob = get[Long](userId) ~
+    get[Long](jobId) ~
+    get[Date](start) ~
+    get[Option[Date]](end) map {
     case userId ~ jobId ~ start ~ end => UserJob(userId, jobId, new DateTime(start), end = end.map(new DateTime(_)))
   }
 

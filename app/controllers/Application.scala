@@ -9,7 +9,7 @@ object Application extends Controller {
   def index = Action {
 
 
-    val userJobs = User.findJobNames(11)
+    val userJobs = User.findJobNamesByUserName("dungvn3000")
 
     println(userJobs)
 

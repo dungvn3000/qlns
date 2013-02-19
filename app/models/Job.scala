@@ -14,16 +14,15 @@ import play.api.Play.current
  */
 case class Job(id: Long = -1, title: String)
 
-object Job {
+object Job extends TableSchema("job") {
 
-  val tableName = "job"
-  val idCol = "id"
-  val titleCol = "title"
+  val id = column("id")
+  val title = column("title")
 
-  def delete(id: Long) = {
+  def delete(jobId: Long) = {
     DB.withTransaction {
       implicit c => {
-        SQL(s"delete $tableName where $id = {id}").on('id -> id).executeUpdate()
+        SQL(s"delete $tableName where $id = {id}").on('id -> jobId).executeUpdate()
       }
     }
   }
@@ -31,7 +30,7 @@ object Job {
   def update(job: Job) = {
     DB.withTransaction {
       implicit c => {
-        SQL(s"update $tableName set $titleCol = {title} where $idCol = {id}").on('title -> job.title, 'id -> job.id).executeUpdate()
+        SQL(s"update $tableName set $title = {title} where $id = {id}").on('title -> job.title, 'id -> job.id).executeUpdate()
       }
     }
   }
@@ -39,13 +38,13 @@ object Job {
   def insert(job: Job) = {
     DB.withTransaction {
       implicit c => {
-        SQL(s"insert into $tableName ($titleCol) value ({title})").on('title -> job.title).executeInsert[Option[Long]]()
+        SQL(s"insert into $tableName ($title) value ({title})").on('title -> job.title).executeInsert[Option[Long]]()
       }
     }
   }
 
-  def job = get[Long](idCol) ~
-    get[String](titleCol) map {
+  def job = get[Long](id) ~
+    get[String](title) map {
     case id ~ title => Job(id, title)
   }
 

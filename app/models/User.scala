@@ -27,22 +27,21 @@ case class User(
                  dob: DateTime
                  )
 
-object User {
+object User extends TableSchema("user") {
 
-  val tableName = "user"
-  val idCol = "id"
-  val usernameCol = "username"
-  val passwordCol = "password"
-  val emailCol = "email"
-  val firstNameCol = "firstName"
-  val lastNameCol = "lastName"
-  val phoneCol = "phone"
-  val addressCol = "address"
-  val roleCol = "role"
-  val dobCol = "dob"
+  val id = column("id")
+  val username = column("username")
+  val password = column("password")
+  val email = column("email")
+  val firstName = column("firstName")
+  val lastName = column("lastName")
+  val phone = column("phone")
+  val address = column("address")
+  val role = column("role")
+  val dob = column("dob")
 
   def findByUserName(userName: String) = DB.withConnection(implicit c => {
-    SQL(s"select * from $tableName where $usernameCol = {username}").on('username -> userName).singleOpt(user)
+    SQL(s"select * from $tableName where $username = {username}").on('username -> userName).singleOpt(user)
   })
 
   def all(): List[User] = DB.withConnection {
@@ -50,27 +49,27 @@ object User {
       SQL(s"select * from $tableName").as(user *)
   }
 
-  def findJobNames(userId: Long) = DB.withConnection(implicit c => {
-    SQL(s"select ${Job.titleCol} from $tableName " +
-      s"inner join ${UserJob.tableName} on ${UserJob.tableName}.${UserJob.userIdCol} = $idCol " +
-      s"inner join ${Job.tableName} on ${Job.tableName}.${Job.idCol} = ${UserJob.tableName}.${UserJob.jobIdCol} " +
-      s"where $tableName.$idCol = {userId}").on('userId -> userId).as(scalar[String] *)
+  def findJobNamesByUserName(uName: String) = DB.withConnection(implicit c => {
+    SQL(s"select ${Job.title} from $tableName " +
+      s"inner join ${UserJob.tableName} on ${UserJob.userId} = $id " +
+      s"inner join ${Job.tableName} on ${Job.id} = ${UserJob.jobId} " +
+      s"where $username = {username}").on('username -> uName).as(scalar[String] *)
   })
 
   def update(user: User) {
     DB.withTransaction {
       implicit c => {
         SQL(s"update $tableName set " +
-          s"$usernameCol = {username} " +
-          s"$passwordCol = {password} " +
-          s"$emailCol = {email} " +
-          s"$firstNameCol = {firstName} " +
-          s"$lastNameCol = {lastName} " +
-          s"$phoneCol = {phone} " +
-          s"$addressCol = {address} " +
-          s"$roleCol = {role} " +
-          s"$dobCol = {dob} " +
-          s"where $idCol = {id}"
+          s"$username = {username} " +
+          s"$password = {password} " +
+          s"$email = {email} " +
+          s"$firstName = {firstName} " +
+          s"$lastName = {lastName} " +
+          s"$phone = {phone} " +
+          s"$address = {address} " +
+          s"$role = {role} " +
+          s"$dob = {dob} " +
+          s"where $id = {id}"
         ).on(
           'id -> user.id,
           'username -> user.username,
@@ -91,15 +90,15 @@ object User {
     DB.withTransaction {
       implicit c =>
         SQL(s"insert into $tableName (" +
-          s"$usernameCol, " +
-          s"$passwordCol," +
-          s"$emailCol," +
-          s"$firstNameCol," +
-          s"$lastNameCol," +
-          s"$phoneCol," +
-          s"$addressCol," +
-          s"$roleCol," +
-          s"$dobCol" +
+          s"$username, " +
+          s"$password," +
+          s"$email," +
+          s"$firstName," +
+          s"$lastName," +
+          s"$phone," +
+          s"$address," +
+          s"$role," +
+          s"$dob" +
           ") values (" +
           "{username}, " +
           "{password}," +
@@ -125,16 +124,16 @@ object User {
   }
 
   val user = {
-    get[Long](idCol) ~
-      get[String](usernameCol) ~
-      get[String](passwordCol) ~
-      get[Option[String]](emailCol) ~
-      get[String](firstNameCol) ~
-      get[String](lastNameCol) ~
-      get[String](phoneCol) ~
-      get[String](addressCol) ~
-      get[String](roleCol) ~
-      get[Date](dobCol) map {
+    get[Long](id) ~
+      get[String](username) ~
+      get[String](password) ~
+      get[Option[String]](email) ~
+      get[String](firstName) ~
+      get[String](lastName) ~
+      get[String](phone) ~
+      get[String](address) ~
+      get[String](role) ~
+      get[Date](dob) map {
       case id ~
         username ~
         password ~
