@@ -50,6 +50,13 @@ object User {
       SQL(s"select * from $tableName").as(user *)
   }
 
+  def findJobNames(userId: Long) = DB.withConnection(implicit c => {
+    SQL(s"select ${Job.titleCol} from $tableName " +
+      s"inner join ${UserJob.tableName} on ${UserJob.tableName}.${UserJob.userIdCol} = $idCol " +
+      s"inner join ${Job.tableName} on ${Job.tableName}.${Job.idCol} = ${UserJob.tableName}.${UserJob.jobIdCol} " +
+      s"where $tableName.$idCol = {userId}").on('userId -> userId).as(scalar[String] *)
+  })
+
   def update(user: User) {
     DB.withTransaction {
       implicit c => {
