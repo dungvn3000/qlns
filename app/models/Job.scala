@@ -1,6 +1,5 @@
 package models
 
-import com.googlecode.mapperdao._
 
 /**
  * The Class Job.
