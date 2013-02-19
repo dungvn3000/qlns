@@ -15,7 +15,7 @@ import java.util.Date
  *
  */
 case class User(
-                 id: Long,
+                 id: Long = -1,
                  username: String,
                  password: String,
                  email: Option[String] = None,
@@ -54,16 +54,18 @@ object User {
     DB.withTransaction {
       implicit c => {
         SQL(s"update $tableName set " +
-          s"$usernameCol = {username}" +
-          s"$passwordCol = {password}" +
-          s"$emailCol = {email}" +
-          s"$firstNameCol = {firstName}" +
-          s"$lastNameCol = {lastName}" +
-          s"$phoneCol = {phone}" +
-          s"$addressCol = {address}" +
-          s"$roleCol = {role}" +
-          s"$dobCol = {dob}"
+          s"$usernameCol = {username} " +
+          s"$passwordCol = {password} " +
+          s"$emailCol = {email} " +
+          s"$firstNameCol = {firstName} " +
+          s"$lastNameCol = {lastName} " +
+          s"$phoneCol = {phone} " +
+          s"$addressCol = {address} " +
+          s"$roleCol = {role} " +
+          s"$dobCol = {dob} " +
+          s"where $idCol = {id}"
         ).on(
+          'id -> user.id,
           'username -> user.username,
           'password -> user.password,
           'email -> user.email.getOrElse(""),
@@ -78,7 +80,7 @@ object User {
     }
   }
 
-  def insert(user: User) {
+  def insert(user: User) = {
     DB.withTransaction {
       implicit c =>
         SQL(s"insert into $tableName (" +
@@ -111,7 +113,7 @@ object User {
           'address -> user.address,
           'role -> user.role,
           'dob -> user.dob.toDate
-        ).executeInsert()
+        ).executeInsert[Option[Long]]()
     }
   }
 

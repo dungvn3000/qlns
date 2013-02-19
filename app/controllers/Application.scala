@@ -1,13 +1,18 @@
 package controllers
 
 import play.api.mvc._
-import models.User
+import models.{UserJob, Job, User}
+import org.joda.time.DateTime
 
 object Application extends Controller {
 
   def index = Action {
-    val user = User.findByUserName("dungvn3000")
-    println(user.get.id)
+
+
+    val userJobs = UserJob.findByUserId(11)
+
+    println(userJobs)
+
     Ok(views.html.index(Nil))
   }
 
