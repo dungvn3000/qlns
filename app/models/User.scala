@@ -40,10 +40,10 @@ object User extends TableSchema("user") {
   val roleC = column("role")
   val dobC = column("dob")
 
-  def login(user: User) = {
+  def login(username: String, password: String) = {
     DB.withConnection(implicit c => {
       SQL(s"select * from $table where $usernameC = {username} and $passwordC = {password}")
-        .on('username -> user.username, 'password -> user.password).singleOpt().isDefined
+        .on('username -> username, 'password -> password).singleOpt().isDefined
     })
   }
 

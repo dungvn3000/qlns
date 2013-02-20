@@ -5,6 +5,7 @@ import models.{User, Permission}
 import play.api.mvc._
 import play.api.mvc.Results._
 import controllers.routes
+import scala.reflect._
 
 /**
  * The Class AuthConfigImpl.
@@ -21,7 +22,7 @@ trait AuthConfigImpl extends AuthConfig {
 
   type Authority = Permission
 
-  implicit def idTag = scala.reflect.classTag[Id]
+  implicit val idTag: ClassTag[Id] = classTag[Id]
 
   def sessionTimeoutInSeconds = 3600
 
@@ -35,6 +36,6 @@ trait AuthConfigImpl extends AuthConfig {
 
   def authorizationFailed(request: RequestHeader) = Forbidden("bien di may")
 
-  def authorize(user: User, authority: Authority) = User.login(user)
+  def authorize(user: User, authority: Authority) = User.login(user.username, user.password)
 
 }
