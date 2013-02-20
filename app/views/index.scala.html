@@ -1,6 +1,6 @@
-@(message: String)
+@(message: String)(implicit user: User)
 
-@main(Messages("application.name")) {
+@main {
 
 	<h1>@message</h1>
     

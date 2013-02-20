@@ -1,10 +1,10 @@
-@(title: String)(content: Html)
+@(content: Html)(implicit user: User)
 
 <!DOCTYPE html>
 
 <html>
     <head>
-    	@header(title)
+    	@header()
     </head>
 
     <body>

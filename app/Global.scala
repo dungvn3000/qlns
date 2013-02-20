@@ -1,7 +1,6 @@
-import play.api.cache.Cache
-import play.api.mvc.RequestHeader
-import play.api.{Logger, Application, GlobalSettings}
-import play.api.Play.current
+import com.typesafe.config.ConfigFactory
+import java.io.File
+import play.api._
 
 /**
  * The Class Global.
@@ -12,6 +11,9 @@ import play.api.Play.current
  */
 object Global extends GlobalSettings {
 
+  val devConfFilePath = "conf/dev.conf"
+  val prodConfFilePath = "conf/prod.conf"
+
   override def onStart(app: Application) {
     Logger.info("Starting Application")
   }
@@ -20,11 +22,13 @@ object Global extends GlobalSettings {
     Logger.info("Application shutdown...")
   }
 
-  override def onRouteRequest(request: RequestHeader) = {
-    //TODO: Hacking auth plugin, keep session after reload application, this code will be remove in production @dungvn3000
-    request.session.get("sessionId").map(sessionId => {
-      Cache.set(sessionId + ":sessionId", "dungvn3000")
-    })
-    super.onRouteRequest(request)
+  override def onLoadConfig(config: Configuration, path: File, classloader: ClassLoader, mode: Mode.Mode) = {
+    if (mode == Mode.Prod) {
+      val devconfig = ConfigFactory.parseFileAnySyntax(new File(path, prodConfFilePath))
+      config ++ Configuration(devconfig)
+    } else {
+      val devconfig = ConfigFactory.parseFileAnySyntax(new File(path, devConfFilePath))
+      config ++ Configuration(devconfig)
+    }
   }
 }

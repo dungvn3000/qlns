@@ -8,7 +8,7 @@ import models.NormalUser
 object Application extends Controller with Auth with AuthConfigImpl {
 
   def index = authorizedAction(NormalUser)(implicit user => implicit request => {
-    Ok(views.html.index("dsds"))
+    Ok(views.html.index("dung ne"))
   })
 
 }
