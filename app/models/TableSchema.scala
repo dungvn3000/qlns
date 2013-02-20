@@ -7,6 +7,6 @@ package models
  * @since 2/19/13, 6:29 PM
  *
  */
-abstract class TableSchema(val tableName: String) {
-  def column(name: String) = s"$tableName.$name"
+abstract class TableSchema(val table: String) {
+  def column(name: String) = s"$table.$name"
 }

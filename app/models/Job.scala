@@ -16,13 +16,13 @@ case class Job(id: Long = -1, title: String)
 
 object Job extends TableSchema("job") {
 
-  val id = column("id")
-  val title = column("title")
+  val idC = column("id")
+  val titleC = column("title")
 
   def delete(jobId: Long) = {
     DB.withTransaction {
       implicit c => {
-        SQL(s"delete $tableName where $id = {id}").on('id -> jobId).executeUpdate()
+        SQL(s"delete $table where $idC = {id}").on('id -> jobId).executeUpdate()
       }
     }
   }
@@ -30,7 +30,7 @@ object Job extends TableSchema("job") {
   def update(job: Job) = {
     DB.withTransaction {
       implicit c => {
-        SQL(s"update $tableName set $title = {title} where $id = {id}").on('title -> job.title, 'id -> job.id).executeUpdate()
+        SQL(s"update $table set $titleC = {title} where $idC = {id}").on('title -> job.title, 'id -> job.id).executeUpdate()
       }
     }
   }
@@ -38,13 +38,13 @@ object Job extends TableSchema("job") {
   def insert(job: Job) = {
     DB.withTransaction {
       implicit c => {
-        SQL(s"insert into $tableName ($title) value ({title})").on('title -> job.title).executeInsert[Option[Long]]()
+        SQL(s"insert into $table ($titleC) value ({title})").on('title -> job.title).executeInsert[Option[Long]]()
       }
     }
   }
 
-  def job = get[Long](id) ~
-    get[String](title) map {
+  def job = get[Long](idC) ~
+    get[String](titleC) map {
     case id ~ title => Job(id, title)
   }
 

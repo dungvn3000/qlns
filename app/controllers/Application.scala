@@ -1,19 +1,14 @@
 package controllers
 
 import play.api.mvc._
-import models.{UserJob, Job, User}
-import org.joda.time.DateTime
+import auth.AuthConfigImpl
+import jp.t2v.lab.play20.auth.Auth
+import models.NormalUser
 
-object Application extends Controller {
+object Application extends Controller with Auth with AuthConfigImpl {
 
-  def index = Action {
-
-
-    val userJobs = User.findJobNamesByUserName("dungvn3000")
-
-    println(userJobs)
-
-    Ok(views.html.index(Nil))
-  }
+  def index = authorizedAction(NormalUser)(implicit user => implicit request => {
+    Ok(views.html.index("dsds"))
+  })
 
 }
