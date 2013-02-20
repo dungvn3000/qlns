@@ -1,0 +1,10 @@
+@(name: String, title: String, sort: Boolean = true)(implicit page: CURDPage, curdRoutes: CURDRoutes)
+
+<th class="@if(sort){header} @if(page.orderBy == name){@if(page.orderValue > 0) {headerSortUp} else {headerSortDown}}">
+	@if(sort){
+		<a href="@curdRoutes.index(orderBy = name, orderValue = 0 - page.orderValue)">@title</a>
+	} else {
+		@title
+	}
+</th>
+

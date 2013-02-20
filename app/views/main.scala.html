@@ -4,9 +4,27 @@
 
 <html>
     <head>
-        @header(title)
+    	@header(title)
     </head>
+
     <body>
-        @content
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            @navbar()
+        </div>
+
+        <div class="container">
+            @content
+        </div>
+
+        <hr>
+
+        <footer>
+            <div class="container">
+                <p class="muted credit" style="text-align:center">
+                    © @Messages("application.url") 2013
+                </p>
+            </div>
+        </footer>
     </body>
+    
 </html>

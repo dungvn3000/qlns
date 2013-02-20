@@ -1,0 +1,19 @@
+@(title: String)(implicit page: CURDPage, curdRoutes: CURDRoutes)
+
+<legend>@title</legend>
+
+<div class="table-control row-fluid">
+	<div class="span4">
+		<form class="form-search" action="@curdRoutes.index()">
+			<input type="hidden" name="p.id" value="">
+			<input type="hidden" name="p.p" value="1">
+			<input type="hidden" name="p.o" value="_id">
+			<input type="hidden" name="p.ov" value="1">
+			<input type="search" class="input-medium" name="p.f" value="@page.currentFilter" placeholder="Search by name">
+		  	<button type="submit" class="btn btn-primary">Search</button>
+		</form>
+	</div>
+	<div style="float:right">
+		<a class="btn btn-success btn-add" id="add" href="@curdRoutes.add()">Create new</a>
+	</div>
+</div>
