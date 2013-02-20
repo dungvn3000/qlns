@@ -12,7 +12,7 @@ import play.api._
 object Global extends GlobalSettings {
 
   val devConfFilePath = "conf/dev.conf"
-  val prodConfFilePath = "conf/prod.conf"
+  val prodConfFilePath = "prod.conf"
 
   override def onStart(app: Application) {
     Logger.info("Starting Application")
@@ -22,13 +22,12 @@ object Global extends GlobalSettings {
     Logger.info("Application shutdown...")
   }
 
-  override def onLoadConfig(config: Configuration, path: File, classloader: ClassLoader, mode: Mode.Mode) = {
-    if (mode == Mode.Prod) {
-      val devconfig = ConfigFactory.parseFileAnySyntax(new File(path, prodConfFilePath))
-      config ++ Configuration(devconfig)
-    } else {
-      val devconfig = ConfigFactory.parseFileAnySyntax(new File(path, devConfFilePath))
-      config ++ Configuration(devconfig)
-    }
+  override def onLoadConfig(config: Configuration, path: File, classLoader: ClassLoader, mode: Mode.Mode) = if (mode == Mode.Prod) {
+    val prodConfig = ConfigFactory.parseResources(classLoader, prodConfFilePath)
+    config ++ Configuration(prodConfig)
+  } else {
+    val devConfig = ConfigFactory.parseFileAnySyntax(new File(path, devConfFilePath))
+    config ++ Configuration(devConfig)
   }
+
 }
